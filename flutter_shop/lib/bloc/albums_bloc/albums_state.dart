@@ -11,6 +11,15 @@ class AlbumsLoaded extends AlbumsState {
   const AlbumsLoaded();
 }
 
+class AlbumsLoadFailed extends AlbumsState {
+  const AlbumsLoadFailed();
+}
+
 class AlbumsUpdated extends AlbumsState {
   AlbumsUpdated();
+}
+
+class AlbumsFinded extends AlbumsState {
+  late Map album;
+  AlbumsFinded({required this.album});
 }

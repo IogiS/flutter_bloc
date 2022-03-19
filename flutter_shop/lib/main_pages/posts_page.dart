@@ -1,88 +1,75 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_shop/bloc/albums_bloc.dart';
+import 'package:flutter_shop/bloc/posts_bloc/posts_bloc.dart';
+import 'package:flutter_shop/ui/navigation_ui.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:refresh_loadmore/refresh_loadmore.dart';
 
-class FirstPage extends StatefulWidget {
-  const FirstPage({Key? key}) : super(key: key);
+class PostsPage extends StatefulWidget {
+  const PostsPage({Key? key}) : super(key: key);
 
   @override
-  _FirstPageState createState() => _FirstPageState();
+  _PostsPageState createState() => _PostsPageState();
 }
 
-ScrollController _scrollController = ScrollController();
-bool isLoadingHorizontal = false;
-@override
-State<StatefulWidget> createState() {
-  // TODO: implement createState
-  throw UnimplementedError();
-}
-
-class _FirstPageState extends State<FirstPage> {
+class _PostsPageState extends State<PostsPage> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
 
-    AlbumsBloc().add(LoadAlbums());
+    BlocProvider.of<PostsBloc>(context).add(LoadPosts());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: BlocListener<AlbumsBloc, AlbumsState>(
-            listener: (context, AlbumsState state) {
-      if (state is AlbumsUpdated) {}
-    }, child: BlocBuilder<AlbumsBloc, AlbumsState>(
+        body: BlocListener<PostsBloc, PostsState>(
+            listener: (context, PostsState state) {
+      if (state is PostsFinded) {
+        Navigator.pushNamed(context, '/page4',
+            arguments: {'index': state.post['id']});
+      }
+    }, child: BlocBuilder<PostsBloc, PostsState>(
       builder: (context, state) {
-        if (state is AlbumsInitial) {
-          return const CircularProgressIndicator(color: Colors.blue);
+        if (state is PostsInitial) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
+
         return cardList();
       },
     )));
   }
 
   Future<void> _refresh() {
-    BlocProvider.of<AlbumsBloc>(context).add(LoadAlbums());
+    BlocProvider.of<PostsBloc>(context).add(LoadPosts());
     return Future.delayed(Duration(seconds: 0, milliseconds: 2000));
   }
 
   Widget card(int index) {
     return GestureDetector(
-        onTap: () => Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.fade,
-                  child: Scaffold(
-                      appBar: AppBar(
-                        title: const Text('card'),
-                      ),
-                      body: card(index)),
-                  inheritTheme: true,
-                  ctx: context),
-            ),
+        onTap: () =>
+            BlocProvider.of<PostsBloc>(context).add(FindPosts(index: index)),
         child: Center(
           child: Card(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 ListTile(
-                  leading: const Icon(Icons.album),
-                  subtitle: Text(BlocProvider.of<AlbumsBloc>(context)
-                      .albums[index]['title']
+                  leading: const Icon(Icons.post_add),
+                  subtitle: Text(BlocProvider.of<PostsBloc>(context)
+                      .posts[index]['body']
                       .toString()),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     TextButton(
-                      child: Text(BlocProvider.of<AlbumsBloc>(context)
-                          .albums[index]['id']
+                      child: Text(BlocProvider.of<PostsBloc>(context)
+                          .posts[index]['id']
                           .toString()),
                       onPressed: () {/* ... */},
                     ),
@@ -106,18 +93,17 @@ class _FirstPageState extends State<FirstPage> {
             height: MediaQuery.of(context).size.height - 150,
             child: LazyLoadScrollView(
                 onEndOfPage: () =>
-                    BlocProvider.of<AlbumsBloc>(context).add(LazyLoadAlbums()),
+                    BlocProvider.of<PostsBloc>(context).add(LazyLoadPosts()),
                 child: RefreshIndicator(
                     onRefresh: _refresh,
                     child: ListView.builder(
+                        key: const PageStorageKey('myListView'),
                         padding: const EdgeInsets.all(8),
                         itemCount:
-                            BlocProvider.of<AlbumsBloc>(context).albums.length,
+                            BlocProvider.of<PostsBloc>(context).posts.length,
                         itemBuilder: (BuildContext context, int index) {
                           if (index ==
-                              BlocProvider.of<AlbumsBloc>(context)
-                                      .albums
-                                      .length -
+                              BlocProvider.of<PostsBloc>(context).posts.length -
                                   1) {
                             return const Center(
                                 child: CircularProgressIndicator());

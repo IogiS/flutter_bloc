@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter_shop/models/albums_model.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 part 'albums_event.dart';
@@ -21,12 +19,12 @@ class AlbumsBloc extends Bloc<AlbumsEvent, AlbumsState> {
             'charset': 'UTF-8',
           },
         );
+        albums = jsonDecode(response.body).sublist(0, 10);
+        emit(AlbumsLoaded());
       } catch (e) {
-        print(e);
+        emit(AlbumsLoadFailed());
         throw e;
       }
-      albums = jsonDecode(response.body).sublist(0, 10);
-      emit(AlbumsLoaded());
     });
     on<LazyLoadAlbums>((event, emit) async {
       late http.Response response;
@@ -39,13 +37,32 @@ class AlbumsBloc extends Bloc<AlbumsEvent, AlbumsState> {
             'charset': 'UTF-8',
           },
         );
+        albums = jsonDecode(response.body).sublist(0, albums.length + 10);
+        emit(AlbumsUpdated());
       } catch (e) {
         print(e);
         throw e;
       }
-      albums = jsonDecode(response.body).sublist(0, albums.length + 10);
-      print(albums.length);
-      emit(AlbumsUpdated());
+    });
+
+    on<FindAlbums>((event, emit) async {
+      late http.Response response;
+      try {
+        final uri = Uri.parse(
+            'https://jsonplaceholder.typicode.com/albums/${event.index}');
+        response = await http.get(
+          uri,
+          headers: {
+            'Content-type': 'application/json;charset=UTF-8',
+            'charset': 'UTF-8',
+          },
+        );
+        var album = jsonDecode(response.body);
+        emit(AlbumsFinded(album: album));
+      } catch (e) {
+        print(e);
+        throw e;
+      }
     });
   }
 }

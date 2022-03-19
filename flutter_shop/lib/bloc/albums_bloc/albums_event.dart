@@ -8,3 +8,8 @@ abstract class AlbumsEvent {
 class LoadAlbums extends AlbumsEvent {}
 
 class LazyLoadAlbums extends AlbumsEvent {}
+
+class FindAlbums extends AlbumsEvent {
+  late final index;
+  FindAlbums({required this.index});
+}
