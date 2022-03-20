@@ -14,8 +14,6 @@ void main() => runApp(const MyApp());
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static const String _title = 'Flutter Code Sample';
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -31,7 +29,6 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: const MaterialApp(
-          title: _title,
           home: MyStatefulWidget(),
         ));
   }
@@ -58,7 +55,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('BottomNavigationBar Sample'),
+          title: const Text('Flutter BLoC'),
         ),
         body: Navigator(
           initialRoute: '/',
@@ -159,13 +156,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                                     as Map)['index'] ??
                                                 0]['id']
                                             .toString()),
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
+                                    onPressed: () => {},
                                   ),
                                   const SizedBox(width: 8),
                                   TextButton(
-                                    child: const Text('LISTEN'),
-                                    onPressed: () {/* ... */},
+                                    child: const Text('Back'),
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
                                   ),
                                   const SizedBox(width: 8),
                                 ],

@@ -23,7 +23,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
         print(e);
         throw e;
       }
-      posts = jsonDecode(response.body).sublist(0, 10);
+      posts = jsonDecode(response.body).sublist(0, 11);
       emit(PostsLoaded());
     });
     on<LazyLoadPosts>((event, emit) async {
@@ -37,13 +37,17 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
             'charset': 'UTF-8',
           },
         );
+        if (posts.length + 10 > 100) {
+          posts = jsonDecode(response.body);
+          emit(PostEnded());
+        } else {
+          posts = jsonDecode(response.body).sublist(0, posts.length + 10);
+          emit(PostsUpdated());
+        }
       } catch (e) {
         print(e);
         throw e;
       }
-      posts = jsonDecode(response.body).sublist(0, posts.length + 10);
-      print(posts.length);
-      emit(PostsUpdated());
     });
     on<FindPosts>((event, emit) async {
       late http.Response response;
@@ -62,7 +66,6 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
         throw e;
       }
       var post = jsonDecode(response.body);
-      print(posts.length);
       emit(PostsFinded(post: post));
     });
   }

@@ -19,6 +19,10 @@ class AlbumsUpdated extends AlbumsState {
   AlbumsUpdated();
 }
 
+class AlbumsEnded extends AlbumsState {
+  AlbumsEnded();
+}
+
 class AlbumsFinded extends AlbumsState {
   late Map album;
   AlbumsFinded({required this.album});

@@ -19,7 +19,7 @@ class AlbumsBloc extends Bloc<AlbumsEvent, AlbumsState> {
             'charset': 'UTF-8',
           },
         );
-        albums = jsonDecode(response.body).sublist(0, 10);
+        albums = jsonDecode(response.body).sublist(0, 11);
         emit(AlbumsLoaded());
       } catch (e) {
         emit(AlbumsLoadFailed());
@@ -37,8 +37,14 @@ class AlbumsBloc extends Bloc<AlbumsEvent, AlbumsState> {
             'charset': 'UTF-8',
           },
         );
-        albums = jsonDecode(response.body).sublist(0, albums.length + 10);
-        emit(AlbumsUpdated());
+
+        if (albums.length + 10 > 100) {
+          albums = jsonDecode(response.body);
+          emit(AlbumsEnded());
+        } else {
+          albums = jsonDecode(response.body).sublist(0, albums.length + 10);
+          emit(AlbumsUpdated());
+        }
       } catch (e) {
         print(e);
         throw e;

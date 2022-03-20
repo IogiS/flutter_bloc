@@ -13,6 +13,14 @@ class PostsUpdated extends PostsState {
   PostsUpdated();
 }
 
+class PostEnded extends PostsState {
+  PostEnded();
+}
+
+class PostsLoadFailed extends PostsState {
+  PostsLoadFailed();
+}
+
 class PostsFinded extends PostsState {
   late Map post;
   PostsFinded({required this.post});

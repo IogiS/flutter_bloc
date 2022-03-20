@@ -25,11 +25,6 @@ class _AlbumsPageState extends State<AlbumsPage> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: BlocListener<AlbumsBloc, AlbumsState>(
@@ -41,9 +36,10 @@ class _AlbumsPageState extends State<AlbumsPage> {
     }, child: BlocBuilder<AlbumsBloc, AlbumsState>(
       builder: (context, state) {
         if (state is AlbumsInitial) {
-          return const CircularProgressIndicator(color: Colors.blue);
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
-
         if (state is AlbumsLoadFailed) {
           return const Center(
             child: Text('Something went wrong!'),
@@ -57,7 +53,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
 
   Future<void> _refresh() {
     BlocProvider.of<AlbumsBloc>(context).add(LoadAlbums());
-    return Future.delayed(Duration(seconds: 0, milliseconds: 1000));
+    return Future.delayed(const Duration(seconds: 0, milliseconds: 2000));
   }
 
   Widget card(int index) {
@@ -103,12 +99,11 @@ class _AlbumsPageState extends State<AlbumsPage> {
         child: SizedBox(
             height: MediaQuery.of(context).size.height - 150,
             child: LazyLoadScrollView(
-                onEndOfPage: () =>
-                    BlocProvider.of<AlbumsBloc>(context).add(LazyLoadAlbums()),
+                onEndOfPage: () => {},
                 child: RefreshIndicator(
                     onRefresh: _refresh,
                     child: ListView.builder(
-                        key: new PageStorageKey('myListView'),
+                        key: const PageStorageKey('myListView'),
                         padding: const EdgeInsets.all(8),
                         itemCount:
                             BlocProvider.of<AlbumsBloc>(context).albums.length,
@@ -118,8 +113,17 @@ class _AlbumsPageState extends State<AlbumsPage> {
                                       .albums
                                       .length -
                                   1) {
-                            return const Center(
-                                child: CircularProgressIndicator());
+                            BlocProvider.of<AlbumsBloc>(context)
+                                .add(LazyLoadAlbums());
+                            if (BlocProvider.of<AlbumsBloc>(context).state
+                                is AlbumsEnded) {
+                              return card(index);
+                            } else {
+                              return const SizedBox(
+                                  height: 100,
+                                  child: Center(
+                                      child: CircularProgressIndicator()));
+                            }
                           } else {
                             return card(index);
                           }

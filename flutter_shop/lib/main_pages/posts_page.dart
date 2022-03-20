@@ -16,13 +16,6 @@ class _PostsPageState extends State<PostsPage> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    super.initState();
-
-    BlocProvider.of<PostsBloc>(context).add(LoadPosts());
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: BlocListener<PostsBloc, PostsState>(
@@ -39,7 +32,13 @@ class _PostsPageState extends State<PostsPage> {
           );
         }
 
-        return cardList();
+        if (state is PostsLoadFailed) {
+          return const Center(
+            child: Text('Something went wrong!'),
+          );
+        } else {
+          return cardList();
+        }
       },
     )));
   }
@@ -97,7 +96,7 @@ class _PostsPageState extends State<PostsPage> {
                 child: RefreshIndicator(
                     onRefresh: _refresh,
                     child: ListView.builder(
-                        key: const PageStorageKey('myListView'),
+                        key: const PageStorageKey('myListView1'),
                         padding: const EdgeInsets.all(8),
                         itemCount:
                             BlocProvider.of<PostsBloc>(context).posts.length,
@@ -105,8 +104,17 @@ class _PostsPageState extends State<PostsPage> {
                           if (index ==
                               BlocProvider.of<PostsBloc>(context).posts.length -
                                   1) {
-                            return const Center(
-                                child: CircularProgressIndicator());
+                            BlocProvider.of<PostsBloc>(context)
+                                .add(LazyLoadPosts());
+                            if (BlocProvider.of<PostsBloc>(context).state
+                                is PostEnded) {
+                              return card(index);
+                            } else {
+                              return const SizedBox(
+                                  height: 100,
+                                  child: Center(
+                                      child: CircularProgressIndicator()));
+                            }
                           } else {
                             return card(index);
                           }
