@@ -8,8 +8,14 @@ import 'package:flutter_shop/ui/navigation_ui.dart';
 import 'main_pages/albums_page.dart';
 import 'main_pages/posts_page.dart';
 import 'main_pages/user_page.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart'
+    show debugDefaultTargetPlatformOverride;
 
-void main() => runApp(const MyApp());
+void main() {
+  debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
