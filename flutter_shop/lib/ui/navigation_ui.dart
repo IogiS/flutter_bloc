@@ -44,6 +44,10 @@ class _NavigationBarUIState extends State<NavigationBarUI> {
             icon: Icon(Icons.supervised_user_circle),
             label: 'User',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_basket),
+            label: 'Goods',
+          ),
         ],
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
