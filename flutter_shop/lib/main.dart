@@ -6,11 +6,16 @@ import 'package:flutter_shop/bloc/posts_bloc/posts_bloc.dart';
 import 'package:flutter_shop/bloc/user_bloc/user_bloc.dart';
 import 'package:flutter_shop/ui/navigation_ui.dart';
 import 'main_pages/albums_page.dart';
+import 'main_pages/goods_page.dart';
 import 'main_pages/posts_page.dart';
 import 'main_pages/user_page.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
+import 'package:firedart/firedart.dart';
+
+const apiKey = 'AIzaSyBFM7lRU4J4jMUEl9m809TLT1yo3486f10';
+const projectId = 'flutter-desktop-a28ea';
 
 void main() {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
@@ -55,6 +60,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     PostsPage(),
     AlbumsPage(),
     UserPage(),
+    GoodsPage(),
   ];
 
   @override
@@ -115,7 +121,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                                     as Map)['index'] ??
                                                 0]['id']
                                             .toString()),
-                                    onPressed: () {/* ... */},
+                                    onPressed: () {},
                                   ),
                                   const SizedBox(width: 8),
                                   TextButton(
