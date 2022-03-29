@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_shop/bloc/albums_bloc/albums_bloc.dart';
 import 'package:flutter_shop/bloc/posts_bloc/posts_bloc.dart';
+import 'package:flutter_shop/bloc/products_bloc/products_bloc.dart';
 import 'package:flutter_shop/bloc/user_bloc/user_bloc.dart';
+import 'package:flutter_shop/main_pages/add_product.dart';
+import 'package:flutter_shop/main_pages/product.dart';
+import 'package:flutter_shop/ui/custom_search_delegate_ui.dart';
 import 'package:flutter_shop/ui/navigation_ui.dart';
 import 'main_pages/albums_page.dart';
-import 'main_pages/goods_page.dart';
+import 'main_pages/products_page.dart';
 import 'main_pages/posts_page.dart';
 import 'main_pages/user_page.dart';
 import 'dart:io' show Platform;
@@ -38,6 +42,9 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => UserBloc()..add(LoadUser()),
           ),
+          BlocProvider(
+            create: (context) => ProductsBloc(),
+          ),
         ],
         child: const MaterialApp(
           home: MyStatefulWidget(),
@@ -57,18 +64,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
-    PostsPage(),
-    AlbumsPage(),
+    ProductsPage(),
     UserPage(),
-    GoodsPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Flutter BLoC'),
-        ),
+        appBar: AppBar(title: const Text('Flutter BLoC'), actions: [
+          IconButton(
+              onPressed: () {
+                showSearch(context: context, delegate: CustomSearchDelegate());
+              },
+              icon: const Icon(Icons.search))
+        ]),
         body: Navigator(
           initialRoute: '/',
           onGenerateRoute: (RouteSettings settings) {
@@ -182,6 +191,26 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                             ],
                           ),
                         ),
+                      ),
+                      currentIndex: _selectedIndex,
+                      totalLength: _widgetOptions.length,
+                      transitionType: TransitionType.slide,
+                      transitionDuration: const Duration(milliseconds: 300),
+                    );
+                break;
+              case '/addProduct':
+                builder = (BuildContext context) => BottomBarPageTransition(
+                      builder: (_, index) => const AddProductPage(),
+                      currentIndex: _selectedIndex,
+                      totalLength: _widgetOptions.length,
+                      transitionType: TransitionType.slide,
+                      transitionDuration: const Duration(milliseconds: 300),
+                    );
+                break;
+              case '/product':
+                builder = (BuildContext context) => BottomBarPageTransition(
+                      builder: (_, index) => ProductPage(
+                        product: (settings.arguments as Map)['product'],
                       ),
                       currentIndex: _selectedIndex,
                       totalLength: _widgetOptions.length,
