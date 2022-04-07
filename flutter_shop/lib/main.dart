@@ -7,16 +7,13 @@ import 'package:flutter_shop/bloc/products_bloc/products_bloc.dart';
 import 'package:flutter_shop/bloc/user_bloc/user_bloc.dart';
 import 'package:flutter_shop/main_pages/add_product.dart';
 import 'package:flutter_shop/main_pages/product.dart';
+import 'package:flutter_shop/main_pages/register_page.dart';
 import 'package:flutter_shop/ui/custom_search_delegate_ui.dart';
 import 'package:flutter_shop/ui/navigation_ui.dart';
-import 'main_pages/albums_page.dart';
 import 'main_pages/products_page.dart';
-import 'main_pages/posts_page.dart';
 import 'main_pages/user_page.dart';
-import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
-import 'package:firedart/firedart.dart';
 
 const apiKey = 'AIzaSyBFM7lRU4J4jMUEl9m809TLT1yo3486f10';
 const projectId = 'flutter-desktop-a28ea';
@@ -47,7 +44,7 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: const MaterialApp(
-          home: MyStatefulWidget(),
+          home: RegisterPage(),
         ));
   }
 }
@@ -64,6 +61,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
+    RegisterPage(),
     ProductsPage(),
     UserPage(),
   ];

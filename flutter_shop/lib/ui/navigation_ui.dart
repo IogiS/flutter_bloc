@@ -33,6 +33,10 @@ class _NavigationBarUIState extends State<NavigationBarUI> {
     return BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
+            icon: Icon(Icons.app_registration),
+            label: 'Register',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.shopping_basket),
             label: 'Goods',
           ),
